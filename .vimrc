@@ -1,11 +1,9 @@
 set nocompatible              " be iMproved, required
-filetype off                  " required
+filetype detect
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
@@ -15,6 +13,10 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'tpope/vim-repeat'
 Plugin 'itchyny/lightline.vim'
 Plugin 'tpope/vim-surround'
+Plugin 'preservim/nerdtree'
+
+call vundle#end()
+
 
 syntax enable
 set number "Numbered lines
@@ -25,15 +27,10 @@ set smartindent
 set tabstop=2
 set shiftwidth=2
 set expandtab
-   
+set hlsearch
+
 set ruler
 set mouse=a
-set relativenumber
-" CtrlP settings
-let g:ctrlp_match_window = 'bottom,order:ttb'
-let g:ctrlp_switch_buffer =0
-let g:ctrlp_working_path_mode = 0
-let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
 
 set backup
 set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
@@ -41,3 +38,10 @@ set backupskip=/tmp/*,/private/tmp/*
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set writebackup
 
+" Nerd Tree Directory
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" Recover Vim sessions 
+map <F2> :mksession! ~/vim_session <cr> 
+map <F3> :source ~/vim_session <cr>

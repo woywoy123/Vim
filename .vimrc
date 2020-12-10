@@ -41,7 +41,14 @@ set writebackup
 " Nerd Tree Directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd vimenter * NERDTree
 
 " Recover Vim sessions 
 map <F2> :mksession! ~/vim_session <cr> 
 map <F3> :source ~/vim_session <cr>
+
+set mouse+=a
+
+if &term =~ '^screen'
+  set ttymouse=xterm2
+endif

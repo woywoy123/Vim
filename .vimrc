@@ -9,14 +9,13 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'tpope/vim-sensible'
 Plugin 'altercation/vim-colors-solarized'
-" Plugin 'tpope/vim-repeat'
 Plugin 'itchyny/lightline.vim'
-" Plugin 'tpope/vim-surround'
 Plugin 'preservim/nerdtree'
 Plugin 'codota/tabnine-vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'vim-syntastic/syntastic'
-Plugin 'frazrepo/vim-rainbow'
+" Plugin 'frazrepo/vim-rainbow'
+Plugin 'morhetz/gruvbox'
 call vundle#end()
 
 
@@ -40,12 +39,14 @@ set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set backupskip=/tmp/*,/private/tmp/*
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set writebackup
-colorscheme default
+colorscheme gruvbox
+set background=dark
 
 " Nerd Tree Directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 autocmd vimenter * NERDTree
+autocmd BufNewFile,BufRead *.tex set spelllang spell
 
 au FileType c,cpp,cxx,py call rainbow#looad()
 

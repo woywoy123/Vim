@@ -33,6 +33,7 @@ set hlsearch
 
 set ruler
 set mouse=a
+set completeopt-=preview
 
 set backup
 set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
@@ -41,14 +42,13 @@ set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set writebackup
 colorscheme gruvbox
 set background=dark
+set spell spelllang=en_us
 
 " Nerd Tree Directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 autocmd vimenter * NERDTree
 autocmd BufNewFile,BufRead *.tex set spelllang spell
-
-au FileType c,cpp,cxx,py call rainbow#looad()
 
 " Recover Vim sessions 
 map <F2> :mksession! ~/vim_session <cr> 

@@ -1,4 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
-let g:netrw_dirhist_1='/home/tnom6927/CTIDE/NotModified/CTIDE/src'
-let g:netrw_dirhist_2='/home/tnom6927/CTIDE/NotModified/CTIDE/src/CTIDEefficiency'

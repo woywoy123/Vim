@@ -1,27 +1,25 @@
 set nocompatible              " be iMproved, required
-filetype detect
+filetype off
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'tpope/vim-sensible'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'itchyny/lightline.vim'
-Plugin 'preservim/nerdtree'
-Plugin 'codota/tabnine-vim'
-Plugin 'airblade/vim-gitgutter'
 Plugin 'vim-syntastic/syntastic'
-" Plugin 'frazrepo/vim-rainbow'
+Plugin 'preservim/nerdtree'
+Plugin 'tabnine/YouCompleteMe'
+Plugin 'frazrepo/vim-rainbow'
+Plugin 'itchyny/lightline.vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-sensible'
 Plugin 'morhetz/gruvbox'
 call vundle#end()
 
 
 syntax enable
 set number "Numbered lines
-" set cursorline " highlight current line
 set wildmenu " autocomplete visual 
 set showmatch "highlights matching brakets 
 set smartindent
@@ -35,12 +33,14 @@ set ruler
 set mouse=a
 set completeopt-=preview
 
+silent !mkdir ~/.vim/backups
 set backup
-set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-set backupskip=/tmp/*,/private/tmp/*
-set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-set writebackup
+set backupdir=~/.vim/backups
+
+let g:rainbow_active = 1
+let g:gruvbox_guisp_fallback = "bg"
 colorscheme gruvbox
+
 set background=dark
 set spell spelllang=en_us
 

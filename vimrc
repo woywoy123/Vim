@@ -6,8 +6,8 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'vim-syntastic/syntastic'
-Plugin 'preservim/nerdtree'
+" Plugin 'vim-syntastic/syntastic'
+" Plugin 'preservim/nerdtree'
 Plugin 'tabnine/YouCompleteMe'
 Plugin 'frazrepo/vim-rainbow'
 Plugin 'itchyny/lightline.vim'
@@ -33,11 +33,11 @@ set ruler
 set mouse=a
 set completeopt-=preview
 
-silent !mkdir ~/.vim/backups
+silent !mkdir -p ~/.vim/backups >> /dev/null 2>&1
 set backup
 set backupdir=~/.vim/backups
 
-let g:rainbow_active = 1
+" let g:rainbow_active = 1
 let g:gruvbox_guisp_fallback = "bg"
 colorscheme gruvbox
 
@@ -45,9 +45,9 @@ set background=dark
 set spell spelllang=en_us
 
 " Nerd Tree Directory
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-autocmd vimenter * NERDTree
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" autocmd vimenter * NERDTree
 autocmd BufNewFile,BufRead *.tex set spelllang spell
 
 " Recover Vim sessions 

@@ -44,8 +44,31 @@ let g:indent_guides_enable_on_vim_startup = 1 " vim-index-guides
 
 " Custom CMUS functions 
 function s:issue(inp)
-        call system('/usr/bin/cmus-remote -C "' . a:inp . '" &')
+    call system('/usr/bin/cmus-remote -C "' . a:inp . '" &')
 endfunction
+
+function s:save()
+    call system('/usr/bin/cmus-remote -C "save -e -l -p -q ~/.config/cmus/bkp.cmus" &')
+endfunction
+
+function s:load()
+    call system('/usr/bin/cmus-remote -C "load ~/.config/cmus/bkp.cmus" &')
+endfunction
+
+function s:delete()
+    call <SID>issue("view playlist") 
+    call <SID>issue("win-sel-cur")
+    call <SID>issue("player-play")
+    call <SID>issue("win-remove")
+endfunction
+
+function s:res()
+    let l= substitute(system('/usr/bin/cmus-remote -Q | grep file | cut -d " " -f 2- &'), '\n$', '', '')
+    call <SID>issue("view playlist")
+    call <SID>issue("add -p " . l)
+    call <SID>issue("add -q " . l)
+endfunction
+
 
 " Bindings of Vim
 let mapleader = "<"
@@ -61,33 +84,35 @@ nnoremap <C-w> :w<enter>
 nnoremap eh :call <SID>issue("player-prev")<enter>
 nnoremap ek :call <SID>issue("player-pause")<enter>
 nnoremap el :call <SID>issue("player-next")<enter>
-nnoremap ed :call <SID>issue("win-remove")<enter>
+nnoremap ed :call <SID>delete()<enter>
+nnoremap er :call <SID>res()<enter>
 nnoremap ea :call <SID>issue("win-add-p")<enter>
+
+nnoremap fs :call <SID>save()<enter>
+nnoremap fr :call <SID>load()<enter>
 
 nnoremap wj :call <SID>issue("win-down")<enter>
 nnoremap wk :call <SID>issue("win-up")<enter>
 nnoremap wl :call <SID>issue("seek +5")<enter>
 nnoremap wh :call <SID>issue("seek -5")<enter>
+nnoremap ws :call <SID>issue("win-activate")<enter>
 
 nnoremap w1 :call <SID>issue("view tree")<enter>
 nnoremap w2 :call <SID>issue("view playlist")<enter>
 nnoremap wt :call <SID>issue("win-next")<enter>
 
-
-
-
 " Fancy themes 
-autocmd vimenter * ++nested colorscheme gruvbox
 set background=dark
+set ts=4 sw=4 et
+let g:indent_guides_start_level = 1
+let g:indent_guides_guide_size = 1
+autocmd vimenter * ++nested colorscheme gruvbox
+
 
 " Recover Vim sessions 
 noremap <F2> :mksession! ~/.cache/vim_session <cr> 
 noremap <F3> :source ~/.cache/vim_session <cr>
 set dir=~/.cache/
-
-
-
-
 
 if &term =~ '^screen'
   set ttymouse=xterm2

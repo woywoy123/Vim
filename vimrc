@@ -2,45 +2,138 @@ set nocompatible              " be iMproved, required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
-
-" let Vundle manage Vundle, required
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-sensible'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'morhetz/gruvbox'
+
+" GruvBox Theme 
+Plugin 'gruvbox-community/gruvbox'
+
+" Spell check library
+Plugin 'inkarkat/vim-ingo-library' | Plugin 'inkarkat/vim-SpellCheck' 
+
+" Automatically clear search highlights after you move your cursor.
+Plugin 'haya14busa/is.vim'
+Plugin 'haya14busa/vim-asterisk'
+
+" Automatically adjust tab based on file 
+Plugin 'tpope/vim-sleuth'
+
+" Show git file changes in the gutter.
 Plugin 'mhinz/vim-signify'
-Plugin 'itchyny/lightline.vim'
-Plugin 'dkprice/vim-easygrep'
+
+" A git wrapper.
+Plugin 'tpope/vim-fugitive'
+
+" Dim paragraphs above and below the active paragraph.
+Plugin 'junegunn/limelight.vim'
+
+" Automatically show Vim's complete menu while typing.
+Plugin 'vim-scripts/AutoComplPop'
+
+" Languages and file types
+Plugin 'godlygeek/tabular' | Plugin 'tpope/vim-markdown'
+Plugin 'vim-python/python-syntax'
+
 Plugin 'tabnine/YouCompleteMe'
-Plugin 'preservim/nerdtree'
-Plugin 'mg979/vim-visual-multi'
-Plugin 'godlygeek/tabular'
-Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'Stoozy/vimcord'
-Plugin 'simeji/winresizer'
+
 call vundle#end()
 
-syntax enable
-set lazyredraw "Dont update screen during macro execution 
-set number "Numbered lines
-set wildmenu " autocomplete visual 
-set showmatch "highlights matching brakets 
-set autoindent "New lines inherit the indentation of previous lines
-set smarttab " Automatically switch search to case-sensitive when search query contains uppercase
-set expandtab "Convert tabs to spaces
+" Set Behaviour 
+set autoindent
+set autoread
+set clipboard=unnamedplus,unnamed
+set completeopt=menuone,longest
 set hlsearch "highlight search 
-set incsearch "Incremental search showing partial matches
-set linebreak "Avoid wrapping a line mid word 
-set mouse=a "enable mouse
-set completeopt=longest,menuone
-set mouse+=a
-autocmd FileType latex,tex,md,markdown setlocal spell
+set number "Numbered lines
+set cursorline
+set wildmenu 
+set expandtab
+set mouse=a
+set linebreak
+set showmatch
+set laststatus=2
+set ruler
+set encoding=UTF-8
+syntax on
 
-" PluginSettings 
-set updatetime=100 "vim-signify
-let g:indent_guides_enable_on_vim_startup = 1 " vim-index-guides
+" ------------------ GruvBox ------------------
+colorscheme gruvbox
+set background=dark
+hi Visual cterm=NONE ctermfg=None ctermbg=237 guibg=#3a3a3a
+" ---------------------------------------------
+
+
+" Clear search highlights.
+map <Leader><Space> :let @/=''<CR>
+
+" Prevent selecting and pasting from overwriting what you originally copied.
+xnoremap p pgvy
+
+" Only show the cursor line in the active buffer.
+augroup CursorLine
+    au!
+    au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    au WinLeave * setlocal nocursorline
+augroup END
+
+" ------------------ Show the Git Branch on Status bar -------------- 
+function! s:statusline_expr()
+  let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
+  let ro  = "%{&readonly ? '[RO] ' : ''}"
+  let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
+  let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
+  let sep = ' %= '
+  let pos = ' %-12(%l : %c%V%) '
+  let pct = ' %P'
+  return '[%n] %f %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
+endfunction
+
+let &statusline = s:statusline_expr()
+" ------------------------------------------------------------------ 
+
+" ----------------- Spelling ------------------
+" Enable spelling 
+set complete+=kspell
+set nospell
+set spelllang=en_us
+
+" Toggle spell check 
+nnoremap <F5> :setlocal spell!<CR>
+inoremap <F5> :setlocal spell!<CR>
+
+" Spelling mistakes will be colored up red.
+hi SpellBad cterm=underline 
+hi SpellLocal cterm=underline
+hi SpellRare cterm=underline 
+hi SpellCap cterm=underline 
+" ---------------------------------------------
+
+" ---------------- Sessions -------------------
+call mkdir($HOME . "/.vim/sessions", "p")
+noremap <F2> :mksession! ~/.vim/sessions/session <cr> 
+noremap <F3> :source ~/.vim/sessions/session <cr>
+" ---------------------------------------------
+
+" --------------- Vim-Asterisk ---------------- 
+let g:asterisk#keeppos = 1
+map * <Plug>(asterisk-z*)<Plug>()
+" ---------------------------------------------
+
+" ---------------- LimeLight ------------------ 
+let g:limelight_conceal_ctermfg=244
+" --------------------------------------------- 
+
+" ---------------- VimSignify ------------------ 
+" default updatetime 4000ms is not good for async update
+set updatetime=100
+" --------------------------------------------- 
+
+" Auto-resize splits when Vim gets resized.
+autocmd VimResized * wincmd =
+
+" Make sure all types of requirements.txt files get syntax highlighting.
+autocmd BufNewFile,BufRead requirements*.txt set ft=python
 
 " Custom CMUS functions 
 function s:issue(inp)
@@ -71,16 +164,6 @@ endfunction
 
 
 " Bindings of Vim
-let mapleader = "<"
-nnoremap <leader>v <C-w>v<C-w>l
-nnoremap <leader>h <C-w>s
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-nnoremap <C-q> :q<enter>
-nnoremap <C-w> :w<enter>
-
 nnoremap eh :call <SID>issue("player-prev")<enter>
 nnoremap ek :call <SID>issue("player-pause")<enter>
 nnoremap el :call <SID>issue("player-next")<enter>
@@ -100,21 +183,3 @@ nnoremap ws :call <SID>issue("win-activate")<enter>
 nnoremap w1 :call <SID>issue("view tree")<enter>
 nnoremap w2 :call <SID>issue("view playlist")<enter>
 nnoremap wt :call <SID>issue("win-next")<enter>
-
-" Fancy themes 
-set background=dark
-set ts=4 sw=4 et
-let g:indent_guides_start_level = 1
-let g:indent_guides_guide_size = 1
-autocmd vimenter * ++nested colorscheme gruvbox
-
-
-" Recover Vim sessions 
-noremap <F2> :mksession! ~/.cache/vim_session <cr> 
-noremap <F3> :source ~/.cache/vim_session <cr>
-set dir=~/.cache/
-
-if &term =~ '^screen'
-  set ttymouse=xterm2
-endif
-

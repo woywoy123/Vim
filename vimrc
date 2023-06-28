@@ -1,61 +1,93 @@
-set nocompatible              " be iMproved, required
+ set nocompatible              " be iMproved, required
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.vim/plugged')
 
 " GruvBox Theme 
-Plugin 'gruvbox-community/gruvbox'
+Plug 'gruvbox-community/gruvbox'
 
 " Spell check library
-Plugin 'inkarkat/vim-ingo-library' | Plugin 'inkarkat/vim-SpellCheck' 
+Plug 'inkarkat/vim-ingo-library'
+Plug 'inkarkat/vim-SpellCheck' 
 
 " Automatically clear search highlights after you move your cursor.
-Plugin 'haya14busa/is.vim'
-Plugin 'haya14busa/vim-asterisk'
-
-" Automatically adjust tab based on file 
-Plugin 'tpope/vim-sleuth'
+Plug 'haya14busa/is.vim'
+Plug 'haya14busa/vim-asterisk'
 
 " Show git file changes in the gutter.
-Plugin 'mhinz/vim-signify'
+Plug 'mhinz/vim-signify'
 
 " A git wrapper.
-Plugin 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 
+" Linters for python
+Plug 'vim-syntastic/syntastic'
+Plug 'nvie/vim-flake8'
+ 
 " Dim paragraphs above and below the active paragraph.
-Plugin 'junegunn/limelight.vim'
+Plug 'junegunn/limelight.vim'
+
+Plug 'bling/vim-airline'                  " Lean & mean status/tabline for vim
+Plug 'vim-airline/vim-airline-themes'     " Themes for airline
+Plug 'Lokaltog/powerline'                 " Powerline fonts plugin
 
 " Automatically show Vim's complete menu while typing.
-Plugin 'vim-scripts/AutoComplPop'
+" Plug 'vim-scripts/AutoComplPop'
 
 " Languages and file types
-Plugin 'godlygeek/tabular' | Plugin 'tpope/vim-markdown'
-Plugin 'vim-python/python-syntax'
+Plug 'godlygeek/tabular'
+Plug 'tpope/vim-markdown'
 
-Plugin 'tabnine/YouCompleteMe'
-Plugin 'Stoozy/vimcord'
+" Discord 
+Plug 'Stoozy/vimcord'
+Plug 'preservim/nerdtree'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'}
+Plug 'vim-test/vim-test'
 
-call vundle#end()
+" Autocomplete plugin - Base Plugin
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/asyncomplete.vim'
+
+" Autocomplete additional language supports
+" Plug 'keremc/asyncomplete-clang.vim'
+
+call plug#end()
 
 " Set Behaviour 
-set autoindent
+set expandtab
+set shiftwidth=4
+set softtabstop=4
+
+" set autoindent
+set cindent 
+set ttyfast
 set autoread
 set clipboard=unnamedplus,unnamed
-set completeopt=menuone,longest
+" set completeopt=menu,longest
 set hlsearch "highlight search 
 set number "Numbered lines
-set cursorline
-set wildmenu 
-set expandtab
+set encoding=utf-8
 set mouse=a
-set linebreak
+" set linebreak
 set showmatch
-set laststatus=2
 set ruler
-set encoding=UTF-8
+set noea " stops window adjustment when using vsplit/hsplit 
 syntax on
+
+" ------------------ Autocomplete ------------------ 
+" inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+" 
+" Allows one to create new line regardless if pop-up window is there 
+" inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() . "\<cr>" : "\<cr>"
+" 
+" C installer 
+" autocmd User asyncomplete_setup call asyncomplete#register_source(
+"     \ asyncomplete#sources#clang#get_source_options())
 
 " ------------------ GruvBox ------------------
 colorscheme gruvbox
@@ -77,24 +109,30 @@ augroup CursorLine
     au WinLeave * setlocal nocursorline
 augroup END
 
-" ------------------ Show the Git Branch on Status bar -------------- 
-function! s:statusline_expr()
-  let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-  let ro  = "%{&readonly ? '[RO] ' : ''}"
-  let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
-  let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
-  let sep = ' %= '
-  let pos = ' %-12(%l : %c%V%) '
-  let pct = ' %P'
-  return '[%n] %f %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
-endfunction
+" ------------------ Powerline Settings -------------- 
+let g:Powerline_symbols = 'fancy'
 
-let &statusline = s:statusline_expr()
+if has("gui_running")
+    let s:uname = system("uname")
+    if s:uname == "Darwin\n"
+        set guifont=Source\ Code\ Pro\ for\ Powerline:h15
+        colorscheme PaperColor              " set color scheme
+    endif
+endif
 " ------------------------------------------------------------------ 
+
+
+"=====================================================
+" AirLine settings
+"=====================================================
+let g:airline_theme='badwolf'
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#formatter='default'
+let g:airline_powerline_fonts=1
 
 " ----------------- Spelling ------------------
 " Enable spelling 
-set complete+=kspell
+" set complete+=kspell
 set nospell
 set spelllang=en_us
 
@@ -130,12 +168,49 @@ set updatetime=100
 " --------------------------------------------- 
 
 " Auto-resize splits when Vim gets resized.
-autocmd VimResized * wincmd =
+" autocmd VimResized * wincmd =
 
-" Make sure all types of requirements.txt files get syntax highlighting.
-autocmd BufNewFile,BufRead requirements*.txt set ft=python
+" ----------------- Linters ------------------- 
+let python_highlight_all=1
+" --------------------------------------------- 
 
-" Custom CMUS functions 
+" -------------- Markdown Preview Config ---------------
+let g:mkdp_auto_start = 0
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 0
+let g:mkdp_command_for_global = 0
+let g:mkdp_open_to_the_world = 0
+let g:mkdp_open_ip = ''
+let g:mkdp_browser = ''
+let g:mkdp_echo_preview_url = 0
+let g:mkdp_browserfunc = ''
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': {},
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1,
+    \ 'sequence_diagrams': {},
+    \ 'flowchart_diagrams': {},
+    \ 'content_editable': v:false,
+    \ 'disable_filename': 0,
+    \ 'toc': {}
+    \ }
+let g:mkdp_markdown_css = ''
+let g:mkdp_highlight_css = ''
+let g:mkdp_port = ''
+let g:mkdp_page_title = '「${name}」'
+let g:mkdp_filetypes = ['markdown']
+let g:mkdp_theme = 'dark'
+
+nmap <C-s> <Plug>MarkdownPreview
+nmap <M-s> <Plug>MarkdownPreviewStop
+nmap <C-p> <Plug>MarkdownPreviewToggle
+
+
+" -------------- Custom CMUS functions -----------------
 function s:issue(inp)
     call system('/usr/bin/cmus-remote -C "' . a:inp . '" &')
 endfunction

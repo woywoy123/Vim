@@ -22,6 +22,16 @@ Plug 'haya14busa/vim-asterisk'
 " Show git file changes in the gutter.
 Plug 'mhinz/vim-signify'
 
+" latex folding plugin 
+Plug 'matze/vim-tex-fold'
+
+" paper recommendation engine (writing stuff)
+Plug 'anufrievroman/vim-angry-reviewer'
+Plug 'anufrievroman/vim-tex-kawaii'
+
+" vim shortcut recommender 
+Plug 'danth/pathfinder.vim'
+
 " A git wrapper.
 Plug 'tpope/vim-fugitive'
 
@@ -56,6 +66,9 @@ Plug 'vim-test/vim-test'
 " Autocomplete additional language supports
 " Plug 'keremc/asyncomplete-clang.vim'
 
+" TMUX navigation 
+Plug 'christoomey/vim-tmux-navigator'
+
 call plug#end()
 
 " Set Behaviour 
@@ -74,6 +87,7 @@ set number "Numbered lines
 set encoding=utf-8
 set mouse=a
 " set linebreak
+set ttymouse=sgr
 set showmatch
 set ruler
 set noea " stops window adjustment when using vsplit/hsplit 
@@ -208,6 +222,27 @@ let g:mkdp_theme = 'dark'
 nmap <C-s> <Plug>MarkdownPreview
 nmap <M-s> <Plug>MarkdownPreviewStop
 nmap <C-p> <Plug>MarkdownPreviewToggle
+
+" -------------- Tmux navigation ------------ 
+let g:tmux_navigator_no_mappings = 1
+
+noremap <silent> <c-h> :<C-U>TmuxNavigateLeft<cr>
+noremap <silent> <c-j> :<C-U>TmuxNavigateDown<cr>
+noremap <silent> <c-k> :<C-U>TmuxNavigateUp<cr>
+noremap <silent> <c-l> :<C-U>TmuxNavigateRight<cr>
+
+
+" ------------- Angry Reviewer Settings ----------------
+let g:AngryReviewerEnglish='american'
+
+" ------------- Latex Compilation --------------------
+nmap cc :w<cr> :!pdflatex %:r.tex 
+            \ && bibtex %:r.aux 
+            \ && pdflatex %:r.tex 
+            \ && pdflatex %:r.tex 
+            \ && rm %:r.aux %:r.log %:r.blg %:r.bbl<cr>
+
+nmap za :!zathura %:r.pdf > /dev/null 2>&1 &<cr><cr>
 
 
 " -------------- Custom CMUS functions -----------------
